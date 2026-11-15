@@ -1,0 +1,5 @@
+# Copia este archivo como config/db.properties y pon tus datos reales.
+# db.properties NO se sube a GitHub (esta en .gitignore).
+db.url=jdbc:mysql://localhost:3306/erp_little_horizons?characterEncoding=UTF-8&useSSL=false&serverTimezone=America/Bogota&allowPublicKeyRetrieval=true
+db.user=root
+db.password=tu_contrasena
