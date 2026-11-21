@@ -1,0 +1,6 @@
+out/
+config/db.properties
+error_log.txt
+invoices/*.pdf
+.idea/
+*.iml
