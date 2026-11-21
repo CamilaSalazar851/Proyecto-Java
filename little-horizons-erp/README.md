@@ -116,6 +116,7 @@ java -cp "out;lib/*" com.littlehorizons.erp.Main      # Windows
 
 ```
 little-horizons-erp/
+├── asistencias_importar.csv          # archivo de ejemplo para la importacion masiva de asistencias
 ├── docs/database.sql                 # DDL + DML (datos de prueba)
 ├── config/db.properties.example      # plantilla de credenciales
 ├── invoices/                         # facturas PDF generadas
@@ -169,6 +170,8 @@ little-horizons-erp/
 
 **Academico.** Inscripcion en las materias del grado del estudiante por periodo; registro de notas 0.0 a 5.0 con un decimal (solo el profesor asignado a la materia); promedio por materia, promedio general por periodo y promedio del curso, calculados automaticamente; historial completo desde el ingreso; asistencia diaria (Presente, Ausente, Tardanza, Excusa Medica); reporte de estudiantes con mas de 3 ausencias en una semana.
 
+**Importacion masiva de asistencias (opcion TEST).** La opcion `8. TEST - Importar Asistencias desde CSV` del menu principal lee el archivo `asistencias_importar.csv` de la carpeta raiz del proyecto y carga las asistencias de una sola vez. La primera linea debe ser exactamente `id_estudiante;id_materia;fecha;estado`; cada linea de datos tiene 4 campos separados por `;`, con la fecha en formato `YYYY-MM-DD` y el estado exactamente `Presente`, `Ausente`, `Tardanza` o `Excusa Médica`. Cada linea se valida y se inserta de forma independiente (estudiante y materia existentes, fecha real, estado permitido): una linea con error no detiene las siguientes y las lineas vacias se ignoran. Al final se muestra un reporte con el total de lineas, las exitosas y las que tuvieron error. Una asistencia repetida (mismo estudiante, materia y fecha) se cuenta como error por la restriccion unica de la tabla, asi que volver a importar el mismo archivo no duplica datos. El codigo esta en `AttendanceImportView`, `AttendanceImportController` y `AttendanceImportDao`.
+
 **Profesores.** Directorio, asignacion de materias por anio y seccion, y horarios de clase con deteccion de cruces para un mismo profesor.
 
 **Extracurricular.** Catalogo de clubes con cupo maximo validado dentro de una transaccion con bloqueo de fila (dos inscripciones simultaneas no pueden ocupar el ultimo cupo); retiro con fecha y motivo; calendario de eventos; participantes y posiciones (1er, 2do, 3er lugar, Participante) solo en eventos con competencia.
@@ -195,7 +198,7 @@ _(Agregue aqui capturas del menu principal, el registro de un estudiante, un rep
 
 ## Problemas Conocidos y Limitaciones
 
-- La aplicacion es de consola y no tiene autenticacion ni roles de usuario; cualquier persona que la ejecute accede a todos los modulos.
+- La aplicacion es de consola y no tiene autenticacion ni roles de usuario; cualquier persona que la ejecute accede a todos los modulos. Por eso no hay login que omitir: la opcion TEST aparece directamente en el menu principal.
 - La factura es academica: el CUFE, el QR y la resolucion son **simulados** y no tienen validez ante la DIAN. El IVA se muestra en 0% (servicio educativo).
 - **Cambio al esquema del anexo:** se agrego la tabla `horarios_clase` porque el enunciado exige registrar dia y hora de cada materia y el script original no tenia donde guardarlo. El resto del esquema se respeto tal cual.
 - Las notas usan `DECIMAL(2,1)` como indica el anexo; la restriccion 0.0 a 5.0 se valida ademas en la aplicacion.
